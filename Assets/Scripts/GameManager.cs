@@ -56,4 +56,9 @@ public class GameManager : MonoBehaviour
     {
         player.PlayerShoot();
     }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }

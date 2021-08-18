@@ -34,15 +34,17 @@ public class DroneController : MonoBehaviour
         edgeInfo = Physics2D.Raycast(edgeCheck.position, -transform.up, 1f, platformLayer);
 
         float discToPlayer = Vector2.Distance(transform.position, player.position);
-
         if (discToPlayer < rangeToPlayer)
         {
             FoundPlayer();
+            Debug.Log("Found Player");
         }
         else
         {
             Patrol();
+            Debug.Log("Patrolling");
         }
+
     }
 
     private void FixedUpdate()
@@ -54,7 +56,12 @@ public class DroneController : MonoBehaviour
     {
         Vector2 vector2 = new Vector2(0f, 0f);
         rb.velocity = vector2;
-        Instantiate(enemybulletObj, enemybulletSpawnPoint.position, enemybulletSpawnPoint.rotation);
+        float angle = 0;
+
+        Vector3 relative = transform.InverseTransformPoint(player.position);
+        angle = Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
+        transform.Rotate(0, 0, -angle);
+        //Instantiate(enemybulletObj, enemybulletSpawnPoint.position, enemybulletSpawnPoint.rotation);
     }
 
     private void Patrol()
