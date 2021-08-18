@@ -4,83 +4,104 @@ using UnityEngine;
 
 public class DroneController : MonoBehaviour
 {
+    public float shootSpeed = 10f;
+    private float speed = 200f;
+    private float distance;
 
-    [SerializeField] private float speed;
-    [SerializeField] private Transform edgeCheck;
-
-
-    private bool faceRight = true;
-    public float distance;
-
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     public LayerMask platformLayer;
-    public Transform player;
-    public float rangeToPlayer;
-
-    RaycastHit2D edgeInfo;
+    private Transform player;
+    public float rangeToPlayer, btwShots;
 
     public Transform enemybulletSpawnPoint;
     public GameObject enemybulletObj;
 
+
+    private bool patrolling;
+    private bool turn;
+
+    public Transform checkGround;
+
+    private bool canShoot;
+
+    private Vector3 direction;
+
+    public Transform self;
+
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        //rb = GetComponent<Rigidbody2D>();
+        patrolling = true;
+        speed = Random.Range(100f,150f);
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        canShoot = true;
+
+        direction = (player.position - self.transform.position).normalized;
     }
 
     // Update is called once per frame
     void Update()
     {
-        edgeInfo = Physics2D.Raycast(edgeCheck.position, -transform.up, 1f, platformLayer);
-
-        float discToPlayer = Vector2.Distance(transform.position, player.position);
-        if (discToPlayer < rangeToPlayer)
-        {
-            FoundPlayer();
-            Debug.Log("Found Player");
-        }
-        else
+        if (patrolling)
         {
             Patrol();
-            Debug.Log("Patrolling");
         }
 
+        distance = Vector2.Distance(self.transform.position, player.position);
+
+       if(distance <= rangeToPlayer)
+        {
+            if (player.position.x > self.transform.position.x && self.transform.localScale.x < 0 || player.position.x < self.transform.position.x && self.transform.localScale.x > 0)
+            {
+                Flip();
+            }
+
+            patrolling = false;
+            rb.velocity = Vector2.zero;
+
+            if(canShoot)
+            {
+                StartCoroutine(Shooting());
+            }
+        }
+       else
+        {
+            patrolling = true;
+        }
     }
 
     private void FixedUpdate()
     {
-        
+        if(patrolling)
+        {
+            turn = !Physics2D.OverlapCircle(checkGround.position, 0.1f, platformLayer);
+        }
     }
+    
 
-    private void FoundPlayer()
+    private void Flip()
     {
-        Vector2 vector2 = new Vector2(0f, 0f);
-        rb.velocity = vector2;
-        float angle = 0;
-
-        Vector3 relative = transform.InverseTransformPoint(player.position);
-        angle = Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
-        transform.Rotate(0, 0, -angle);
-        //Instantiate(enemybulletObj, enemybulletSpawnPoint.position, enemybulletSpawnPoint.rotation);
+        patrolling = false;
+        transform.localScale = new Vector2(self.transform.localScale.x * -1, self.transform.localScale.y);
+        speed *= -1;
+        patrolling = true;
     }
 
     private void Patrol()
     {
-        if (edgeInfo.collider != false)
+        if(turn)
         {
-            if (faceRight)
-            {
-                rb.velocity = new Vector2(speed, rb.velocity.y);
-            }
-            else
-            {
-                rb.velocity = new Vector2(-speed, rb.velocity.y);
-            }
+            Flip();
         }
-        else
-        {
-            faceRight = !faceRight;
-            transform.Rotate(0f, 180f, 0f);
-        }
+        rb.velocity = new Vector2(speed * Time.fixedDeltaTime, rb.velocity.y);
+    }
+
+    private IEnumerator Shooting()
+    {
+        canShoot = false;
+        yield return new WaitForSeconds(btwShots);
+        Instantiate(enemybulletObj, enemybulletSpawnPoint.position, Quaternion.identity);
+        canShoot = true;
     }
 }
