@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 
@@ -12,11 +13,19 @@ public class GameManager : MonoBehaviour
 
     public GameObject PauseMenu;
 
+    private bool pressing = false;
+
+    private bool crouch = false;
+
     // Start is called before the first frame update
 
     private void Awake()
     {
-        instance = this;
+        if(instance == null)
+        {
+            instance = this;
+        }
+        player = FindObjectOfType<PlayerController>();
     }
     void Start()
     {
@@ -34,6 +43,13 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
+
+        if(pressing == true)
+        {
+            crouch = true;
+        }
+
+        Debug.Log(pressing);
     }
 
     public void StartGame()
@@ -57,8 +73,16 @@ public class GameManager : MonoBehaviour
         player.PlayerShoot();
     }
 
+    public void Crouch()
+    {
+        
+        player.PlayerCrouch();
+
+    }
+
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
 }

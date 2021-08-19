@@ -102,6 +102,17 @@ public class PlayerController : MonoBehaviour
         Instantiate(bulletObj, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
     }
 
+    public void PlayerCrouch()
+    {
+        playerAnim.SetBool("boolCrouch", true);
+
+    }
+
+    public void PlayerUnCrouch()
+    {
+        playerAnim.SetBool("boolCrouch", false);
+    }
+
     private void PlayerBoundary()
     {
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -3.5f, 3.5f), transform.position.y, transform.position.x);

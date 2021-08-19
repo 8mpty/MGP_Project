@@ -69,6 +69,9 @@ public class DroneController : MonoBehaviour
         {
             patrolling = true;
         }
+        //Debug.DrawLine(self.transform.position, player.transform.position, Color.red, distance);
+        Debug.Log(distance);
+       
     }
 
     private void FixedUpdate()
