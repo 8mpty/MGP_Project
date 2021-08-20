@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 
 
@@ -9,15 +8,25 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public PlayerController player;
+    private PlayerController player;
+    
+    [Header("Menu GameObjects")]
+    public GameObject[] menus = new GameObject[3];
 
-    public GameObject PauseMenu;
+    [Header("Health")]
+    public TextMeshProUGUI HealthMesh;
+
+    [Header("Time")]
+    public TextMeshProUGUI TimeMesh;
+    public float lvlTimer;
+
+    public bool isGameWin = false;
 
     // Start is called before the first frame update
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -26,12 +35,21 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1f;
+        for (int i = 0; i < menus.Length; i++)
+        {
+            menus[i].SetActive(false);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(PauseMenu.activeInHierarchy)
+        if(isGameWin)
+        {
+            return;
+        }
+
+        if (menus[0].activeInHierarchy)
         {
             Time.timeScale = 0f;
         }
@@ -39,17 +57,38 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
+
+        TimeUpdater();
     }
 
-    public void StartGame()
+    public void HealthUpdater(int health)
     {
-        SceneManager.LoadScene("Level1");
-        Debug.Log("Pressed Start");
+        if (health <= 0)
+        {
+            health = 0;
+        }
+        HealthMesh.text = "Health: " + health.ToString();
     }
 
-    public void QuitGame()
+    public void TimeUpdater()
     {
-        Application.Quit();
+        if (lvlTimer <= 0)
+        {
+            lvlTimer = 0;
+            GameOverStatus(false);
+
+            TimeMesh.text = "Time: 0:00";
+
+            return;
+        }
+
+        lvlTimer -= Time.deltaTime * 2;
+
+        string minutes = Mathf.FloorToInt(lvlTimer / 60).ToString();
+        string seconds = (lvlTimer % 60).ToString("F0");
+        seconds = seconds.Length == 1 ? seconds = "0" + seconds : seconds;
+
+        TimeMesh.text = "Time: " + "  " + minutes + ":" + seconds;
     }
 
     public void Jump()
@@ -64,9 +103,17 @@ public class GameManager : MonoBehaviour
 
     public void Crouch()
     {
-        
         player.PlayerCrouch();
+    }
 
+    public void StartGame()
+    {
+        SceneManager.LoadScene("Level1");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     public void RestartGame()
@@ -74,4 +121,19 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    public void GameOverStatus(bool gameOver)
+    {
+        if(gameOver)
+        {
+            isGameWin = true;
+            menus[1].SetActive(true);
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            isGameWin = false;
+            menus[2].SetActive(true);
+            Time.timeScale = 0f;
+        }
+    }
 }

@@ -4,25 +4,29 @@ using System.Collections;
 public class FloorsCreate : MonoBehaviour 
 {
 
-    public GameObject floorPrefab;
-    public bool integerScale = true;
-
     [Header("Coordinates and Scale of Floors")]
-    public float minCreateCoorX = -1.0f;
-    public float maxCreateCoorX = 1.0f;
-    public float offset = 1.0f;
+    [SerializeField] private float minX = -1.0f;
+    [SerializeField] private float maxX = 1.0f;
+    [SerializeField] float offset = 1.0f;
 
+    public GameObject floorPrefab;
+    public GameObject enemyPrefab;
     private Transform player;
+    private Transform self;
 
     private float disc;
     public float ranged;
 
+   // private int leftCount;
+
+    private int enemySpawn;
 	// Use this for initialization
 	void Start () 
     {
         Instantiate(floorPrefab, transform.position, Quaternion.identity);
         player = GameObject.FindGameObjectWithTag("Player").transform;
         disc = Vector2.Distance(player.position, transform.position);
+        self = GetComponent<Transform>();
     }
 
     // Update is called once per frame
@@ -31,23 +35,54 @@ public class FloorsCreate : MonoBehaviour
         Spawning();
 
         disc = Vector2.Distance(player.position, transform.position);
+        Debug.Log(enemySpawn);
     }
 
     private void Spawning()
     {
         if (disc <= ranged)
         {
-            transform.position = new Vector3(Random.Range(-3.3f, 2.5f), transform.position.y + 2.5f);
-            Instantiate(floorPrefab, transform.position, Quaternion.identity);
+            transform.position = new Vector3(Random.Range(minX, maxX), transform.position.y + offset);
+            enemySpawn = Random.Range(1, 3);
+
+            if (self.transform.position.x > 0f)
+            {
+                Quaternion rotation = Quaternion.Euler(0f, 180f, 0f);
+                Instantiate(floorPrefab, transform.position, rotation);
+            }
+            else
+            {
+                Instantiate(floorPrefab, transform.position, Quaternion.identity);
+            }
         }
+
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            transform.position = new Vector3(Random.Range(-3.3f, 2.5f), transform.position.y + 2.5f);
+            Vector3 newPos = transform.position = new Vector3(Random.Range(minX, maxX), transform.position.y + offset);
+            enemySpawn = Random.Range(1,3);
+
+            if (newPos.x > 0f)
+            {
+                Quaternion rotation = Quaternion.Euler(0f, 180f, 0f);
+                Instantiate(floorPrefab, transform.position, rotation);
+                if(enemySpawn == 1)
+                {
+                    Instantiate(enemyPrefab, new Vector3(transform.position.x, transform.position.y + 1f), Quaternion.identity); 
+                }
+            }
+            else
+            {
+                Instantiate(floorPrefab, transform.position, Quaternion.identity);
+                if (enemySpawn == 2)
+                {
+                    Instantiate(enemyPrefab, new Vector3(transform.position.x, transform.position.y + 1f), Quaternion.identity);
+                }
+            }
         }
     }
 
     private void OnDrawGizmosSelected()
     {
-        Debug.DrawLine(transform.position, player.transform.position, Color.red,0f);
+        //Debug.DrawLine(transform.position, player.transform.position, Color.red, 0f);
     }
 }

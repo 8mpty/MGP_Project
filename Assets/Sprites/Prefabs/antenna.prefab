@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1551762367392662430}
   - component: {fileID: 1551762367392662429}
-  - component: {fileID: 1551762367392662431}
   - component: {fileID: 6212512817063739029}
+  - component: {fileID: 5635652597559547468}
   m_Layer: 8
   m_Name: antenna
   m_TagString: Untagged
@@ -81,7 +81,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!251 &1551762367392662431
+--- !u!70 &6212512817063739029
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551762367392662419}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 1
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.03346887, y: 0.016537173}
+  m_Size: {x: 0.78697324, y: 0.06691085}
+  m_Direction: 1
+--- !u!251 &5635652597559547468
 PlatformEffector2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,19 +116,3 @@ PlatformEffector2D:
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
---- !u!70 &6212512817063739029
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1551762367392662419}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.01, y: 0.02}
-  m_Size: {x: 0.83, y: 0.1}
-  m_Direction: 1

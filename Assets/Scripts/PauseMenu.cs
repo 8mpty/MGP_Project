@@ -5,12 +5,14 @@ using UnityEngine;
 public class PauseMenu : MonoBehaviour
 {
 
-    [SerializeField] GameObject _pauseMenu;
-    private bool isGamePaused = false;
+    public GameObject _pauseMenu;
     // Start is called before the first frame update
     void Start()
     {
-        _pauseMenu.SetActive(false);
+        if (_pauseMenu != null)
+        {
+            _pauseMenu.SetActive(false);
+        }
         Time.timeScale = 0f;
     }
 
@@ -27,13 +29,11 @@ public class PauseMenu : MonoBehaviour
     {
         _pauseMenu.SetActive(false);
         Time.timeScale = 1f;
-        isGamePaused = false;
     }
 
     public void Pause()
     {
         _pauseMenu.SetActive(true);
         Time.timeScale = 0f;
-        isGamePaused = true;
     }
 }

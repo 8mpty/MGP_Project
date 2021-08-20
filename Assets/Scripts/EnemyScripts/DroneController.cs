@@ -43,6 +43,19 @@ public class DroneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        LookForPlayer();
+    }
+
+    private void FixedUpdate()
+    {
+        if(patrolling)
+        {
+            turn = !Physics2D.OverlapCircle(checkGround.position, 0.1f, platformLayer);
+        }
+    }
+
+    private void LookForPlayer()
+    {
         if (patrolling)
         {
             Patrol();
@@ -50,7 +63,7 @@ public class DroneController : MonoBehaviour
 
         distance = Vector2.Distance(self.transform.position, player.position);
 
-       if(distance <= rangeToPlayer)
+        if (distance <= rangeToPlayer)
         {
             if (player.position.x > self.transform.position.x && self.transform.localScale.x < 0 || player.position.x < self.transform.position.x && self.transform.localScale.x > 0)
             {
@@ -60,23 +73,14 @@ public class DroneController : MonoBehaviour
             patrolling = false;
             rb.velocity = Vector2.zero;
 
-            if(canShoot)
+            if (canShoot)
             {
                 StartCoroutine(Shooting());
             }
         }
-       else
+        else
         {
             patrolling = true;
-        }
-        //Debug.DrawLine(self.transform.position, player.transform.position, Color.red, distance);       
-    }
-
-    private void FixedUpdate()
-    {
-        if(patrolling)
-        {
-            turn = !Physics2D.OverlapCircle(checkGround.position, 0.1f, platformLayer);
         }
     }
     
