@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1551762367392662429}
   - component: {fileID: 6212512817063739029}
   - component: {fileID: 5635652597559547468}
+  - component: {fileID: 4660605337483858800}
   m_Layer: 8
   m_Name: antenna
   m_TagString: Untagged
@@ -116,3 +117,16 @@ PlatformEffector2D:
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
+--- !u!114 &4660605337483858800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551762367392662419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 616f0deccd385194da90a4bb76327d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 9

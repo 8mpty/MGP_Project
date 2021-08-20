@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class DestroyPlatform : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Transform cameraObj;
 
-    // Update is called once per frame
-    void Update()
+    private float discBtw;
+    private float range = 8f;
+
+    private void Start()
     {
-        
+        cameraObj = GameObject.FindGameObjectWithTag("MainCamera").transform;
+    }
+    private void Update()
+    {
+        discBtw = Vector2.Distance(transform.position, cameraObj.position);
+
+        if (discBtw > range)
+        {
+            if(transform.position.y < cameraObj.position.y)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 }

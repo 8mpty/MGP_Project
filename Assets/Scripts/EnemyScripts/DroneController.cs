@@ -24,20 +24,15 @@ public class DroneController : MonoBehaviour
 
     private bool canShoot;
 
-    private Vector3 direction;
-
     public Transform self;
 
     // Start is called before the first frame update
     void Start()
     {
-        //rb = GetComponent<Rigidbody2D>();
         patrolling = true;
         speed = Random.Range(100f,150f);
         player = GameObject.FindGameObjectWithTag("Player").transform;
         canShoot = true;
-
-        direction = (player.position - self.transform.position).normalized;
     }
 
     // Update is called once per frame

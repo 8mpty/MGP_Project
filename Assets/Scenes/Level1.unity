@@ -593,6 +593,7 @@ GameObject:
   - component: {fileID: 243029015}
   - component: {fileID: 243029014}
   - component: {fileID: 243029013}
+  - component: {fileID: 243029016}
   m_Layer: 8
   m_Name: antenna
   m_TagString: Untagged
@@ -688,6 +689,18 @@ Transform:
   m_Father: {fileID: 1054334940}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &243029016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243029012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 616f0deccd385194da90a4bb76327d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &291123756
 GameObject:
   m_ObjectHideFlags: 0
@@ -3238,6 +3251,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5876421529778751384, guid: d003b021a8c3ae445ae4787940323a8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Drone
+      objectReference: {fileID: 0}
     - target: {fileID: 5876421529778751386, guid: d003b021a8c3ae445ae4787940323a8b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3668,6 +3686,7 @@ GameObject:
   - component: {fileID: 1765134963}
   - component: {fileID: 1765134962}
   - component: {fileID: 1765134961}
+  - component: {fileID: 1765134964}
   m_Layer: 8
   m_Name: antenna (1)
   m_TagString: Untagged
@@ -3763,6 +3782,18 @@ Transform:
   m_Father: {fileID: 1054334940}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+--- !u!114 &1765134964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765134960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 616f0deccd385194da90a4bb76327d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1817672516
 GameObject:
   m_ObjectHideFlags: 0
@@ -3774,6 +3805,7 @@ GameObject:
   - component: {fileID: 1817672519}
   - component: {fileID: 1817672518}
   - component: {fileID: 1817672517}
+  - component: {fileID: 1817672520}
   m_Layer: 8
   m_Name: antenna (2)
   m_TagString: Untagged
@@ -3869,6 +3901,18 @@ Transform:
   m_Father: {fileID: 1054334940}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1817672520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817672516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 616f0deccd385194da90a4bb76327d35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1828850947
 GameObject:
   m_ObjectHideFlags: 0
@@ -4906,6 +4950,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5876421529778751384, guid: d003b021a8c3ae445ae4787940323a8b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Drone
       objectReference: {fileID: 0}
     - target: {fileID: 5876421529778751386, guid: d003b021a8c3ae445ae4787940323a8b,
         type: 3}
