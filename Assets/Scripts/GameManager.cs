@@ -13,10 +13,6 @@ public class GameManager : MonoBehaviour
 
     public GameObject PauseMenu;
 
-    private bool pressing = false;
-
-    private bool crouch = false;
-
     // Start is called before the first frame update
 
     private void Awake()
@@ -43,13 +39,6 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
-
-        if(pressing == true)
-        {
-            crouch = true;
-        }
-
-        Debug.Log(pressing);
     }
 
     public void StartGame()
