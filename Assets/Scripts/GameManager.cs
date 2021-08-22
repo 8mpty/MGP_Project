@@ -9,9 +9,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     private PlayerController player;
-    
+    [HideInInspector] public bool isGameWin = false;
+
     [Header("Menu GameObjects")]
-    public GameObject[] menus = new GameObject[3];
+    public GameObject[] menus;
 
     [Header("Health")]
     public TextMeshProUGUI HealthMesh;
@@ -20,7 +21,15 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TimeMesh;
     public float lvlTimer;
 
-    public bool isGameWin = false;
+    [Header("Score")]
+    public TextMeshProUGUI ScoreMesh;
+    public TextMeshProUGUI HighScoreMesh;
+    public TextMeshProUGUI CurrentScoreMesh;
+    public int gameScore;
+
+    public bool main = false;
+
+    public Toggle bgmToggle;
 
     // Start is called before the first frame update
 
@@ -35,9 +44,33 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1f;
-        for (int i = 0; i < menus.Length; i++)
+        if (main == false)
         {
-            menus[i].SetActive(false);
+            for (int i = 0; i < menus.Length; i++)
+            {
+
+                menus[i].SetActive(false);
+            }
+            menus[3].SetActive(true);
+        }
+        
+        if(HighScoreMesh != null)
+        {
+            HighScoreMesh.text = "HighScore: " + PlayerPrefs.GetInt("HighScore").ToString();
+        }
+
+        if (CurrentScoreMesh != null)
+        {
+            CurrentScoreMesh.text = "Score: 0";
+        }
+
+        if (PlayerPrefs.GetInt("Toggle") == 0)
+        {
+            bgmToggle.isOn = true;
+        }
+        else if (PlayerPrefs.GetInt("Toggle") == 1)
+        {
+            bgmToggle.isOn = false;
         }
     }
 
@@ -49,15 +82,19 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (menus[0].activeInHierarchy)
+        if(main == false)
         {
-            Time.timeScale = 0f;
+            if (menus[0].activeInHierarchy || menus[1].activeInHierarchy || menus[2].activeInHierarchy)
+            {
+                Time.timeScale = 0f;
+                menus[3].SetActive(false);
+            }
+            else
+            {
+                menus[3].SetActive(true);
+                Time.timeScale = 1f;
+            }
         }
-        else
-        {
-            Time.timeScale = 1f;
-        }
-
         TimeUpdater();
     }
 
@@ -67,7 +104,11 @@ public class GameManager : MonoBehaviour
         {
             health = 0;
         }
-        HealthMesh.text = "Health: " + health.ToString();
+
+        if(health >= 100)
+        {
+            health = 100;
+        }
     }
 
     public void TimeUpdater()
@@ -88,7 +129,36 @@ public class GameManager : MonoBehaviour
         string seconds = (lvlTimer % 60).ToString("F0");
         seconds = seconds.Length == 1 ? seconds = "0" + seconds : seconds;
 
-        TimeMesh.text = "Time: " + "  " + minutes + ":" + seconds;
+        if(TimeMesh != null)
+        {
+            TimeMesh.text = "Time: " + "  " + minutes + ":" + seconds;
+        }
+    }
+
+    public void ScoreUpdater(int score)
+    {
+        gameScore += score;
+
+        ScoreMesh.text = "Score: " + gameScore;
+        if (gameScore > PlayerPrefs.GetInt("HighScore",0))
+        {
+            PlayerPrefs.SetInt("HighScore", gameScore);
+            HighScoreMesh.text = "HighScore: " + PlayerPrefs.GetInt("HighScore", gameScore).ToString();
+        }
+        else
+        {
+            HighScoreMesh.text = "HighScore: " + PlayerPrefs.GetInt("HighScore", gameScore).ToString();
+        }
+
+        if(CurrentScoreMesh != null)
+        {
+            CurrentScoreMesh.text = "Score: " + gameScore.ToString();
+        }
+    }
+
+    public void ResetScore()
+    {
+        PlayerPrefs.DeleteAll();
     }
 
     public void Jump()
@@ -114,6 +184,7 @@ public class GameManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+        PlayerPrefs.DeleteKey("Toggle");
     }
 
     public void RestartGame()
@@ -123,17 +194,36 @@ public class GameManager : MonoBehaviour
 
     public void GameOverStatus(bool gameOver)
     {
+        PlayerPrefs.GetInt("Toggle");
         if(gameOver)
         {
             isGameWin = true;
             menus[1].SetActive(true);
             Time.timeScale = 0f;
+            menus[3].SetActive(false);
+            menus[4].SetActive(true);
         }
         else
         {
             isGameWin = false;
             menus[2].SetActive(true);
             Time.timeScale = 0f;
+            menus[3].SetActive(false);
+            menus[4].SetActive(true);
+        }
+    }
+
+    public void StopBgm()
+    {
+        if(!bgmToggle.isOn)// Check is toggle is NOT turned on
+        {
+            PlayerPrefs.SetInt("Toggle", 1);
+            AudioManager.instance.PauseBGM("BGM");
+        }
+        else // If it is turned on, ...
+        {
+            PlayerPrefs.SetInt("Toggle", 0);
+            AudioManager.instance.UnPauseBGM("BGM");
         }
     }
 }

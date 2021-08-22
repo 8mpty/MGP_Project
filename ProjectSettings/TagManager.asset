@@ -6,6 +6,9 @@ TagManager:
   tags:
   - EnemyOrb
   - Drone
+  - PlayerBullet
+  - Heart
+  - Limit
   layers:
   - Default
   - TransparentFX

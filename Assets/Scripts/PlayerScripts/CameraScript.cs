@@ -14,28 +14,33 @@ public class CameraScript : MonoBehaviour
     [SerializeField] private float topLimit = 50f;
     [SerializeField] private float bottomLimit = 0.1f;
 
+    private PlayerController deadStatus;
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        deadStatus = GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        ChangeCamPos();
+    }
+
+    public void ChangeCamPos()
+    {
         Vector3 startPosition = transform.position;
-
         Vector3 targetPosition = player.transform.position;
-
         targetPosition.x += pos.x;
         targetPosition.y += pos.y;
         targetPosition.z = -10;
 
         transform.position = Vector3.Lerp(startPosition, targetPosition, timeOffest * Time.deltaTime);
 
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, leftLimit, rightLimit), 
-            Mathf.Clamp(transform.position.y, bottomLimit, topLimit), 
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, leftLimit, rightLimit),
+            Mathf.Clamp(transform.position.y, bottomLimit, topLimit),
             transform.position.z);
-
     }
 }

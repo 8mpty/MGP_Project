@@ -1,34 +1,57 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-
     private float speed = 3f;
-    [SerializeField] private Rigidbody2D rb;
+    private Rigidbody2D rb;
     private float jumpForce = 7f;
     private bool faceRight = true;
     private Animator playerAnim;
 
     private bool isGround;
-    public Transform groundObj;
-    public LayerMask groundLayer;
+    private Transform groundObj;
+    private LayerMask groundLayer;
 
     private int jumpCount = 2;
 
-    public Transform bulletSpawnPoint;
+    private Transform bulletSpawnPoint;
     public GameObject bulletObj;
 
-    public int playerHealth = 100;
+    private int playerHealth = 100;
+    private int currentHealth;
+    public GameObject floatPoint;
+    private int heartAmount = 5;
+
+    [SerializeField] private Material flashMat;
+    [SerializeField] private float flashDuration = 0.15f;
+
+    private SpriteRenderer spriteChange;
+    private Material oriMat;
+    private Coroutine flashSprite;
+
+    public HealthBar bar;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+        groundObj = transform.GetChild(0).transform;
+        groundLayer = LayerMask.GetMask("Platform");
+        bulletSpawnPoint = transform.GetChild(1).transform;
+
         playerAnim = GetComponent<Animator>();
 
         playerAnim.SetBool("isIdle", true);
+        GameManager.instance.HealthUpdater(playerHealth);
+
+        spriteChange = GetComponent<SpriteRenderer>();
+        oriMat = spriteChange.material;
+
+        currentHealth = playerHealth;
+        bar.SetHealth(playerHealth);
     }
 
     // Update is called once per frame
@@ -39,7 +62,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        PlayerHealth();
         PlayerMovement();
         PlayerBoundary();
 
@@ -52,8 +74,14 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.K))
         {
             playerHealth -= 1;
+            GameManager.instance.HealthUpdater(playerHealth);
+
         }
         if (Input.GetKeyDown(KeyCode.L))
+        {
+            GameManager.instance.GameOverStatus(false);
+        }
+        else if (Input.GetKeyDown(KeyCode.U))
         {
             GameManager.instance.GameOverStatus(true);
         }
@@ -89,13 +117,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayerHealth()
+    private void PlayerDead()
     {
-        GameManager.instance.HealthUpdater(playerHealth);
-        if (playerHealth <= 0)
-        {
-            GameManager.instance.GameOverStatus(false);
-        }
+        //Destroy(gameObject);
+        GameManager.instance.GameOverStatus(false);
     }
 
     private void Flip()
@@ -108,11 +133,11 @@ public class PlayerController : MonoBehaviour
     {
         if(jumpCount <= 2 && jumpCount != 1)
         {
-            //rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             rb.velocity = Vector2.up * jumpForce;
 
             playerAnim.SetTrigger("triggJump");
             jumpCount--;
+            AudioManager.instance.Play("PlayerJump");
         }
     }
 
@@ -120,6 +145,7 @@ public class PlayerController : MonoBehaviour
     {
         playerAnim.SetTrigger("triggShoot");
         Instantiate(bulletObj, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        AudioManager.instance.Play("PlayerShoot");
     }
 
     public void PlayerCrouch()
@@ -137,12 +163,68 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -3.5f, 3.5f), transform.position.y, transform.position.x);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void Flash()
     {
-        if(collision.gameObject.CompareTag("EnemyOrb"))
+        if (flashSprite != null)
         {
-            playerHealth -= 1;
-            GameManager.instance.HealthUpdater(playerHealth);
+            StopCoroutine(flashSprite);
+        }
+
+        flashSprite = StartCoroutine(FlashSprite());
+    }
+
+    private IEnumerator FlashSprite()
+    {
+        spriteChange.material = flashMat;
+
+        yield return new WaitForSeconds(flashDuration);
+
+        spriteChange.material = oriMat;
+
+        flashSprite = null;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("EnemyOrb"))
+        {
+            AudioManager.instance.Play("PlayerDamaged");
+            Flash();
+            playerAnim.SetTrigger("triggHurt");
+            EnemyBullet bullet = collision.gameObject.GetComponent<EnemyBullet>();
+            currentHealth -= bullet.enemyDamage;
+            GameManager.instance.HealthUpdater(currentHealth);
+            bar.SetHealth(currentHealth);
+
+            GameObject decHealth = Instantiate(floatPoint, new Vector3(transform.position.x + 0.338f, transform.position.y + 0.189f, 0f), Quaternion.identity) as GameObject;
+            decHealth.transform.GetChild(0).GetComponent<TextMeshPro>().color = Color.red;
+            decHealth.transform.GetChild(0).GetComponent<TextMeshPro>().text = "-" + bullet.enemyDamage;
+
+            if (currentHealth <= 0)
+            {
+                GameManager.instance.GameOverStatus(false);
+            }
+            Destroy(collision.gameObject);
+        }
+
+        if(collision.gameObject.CompareTag("Heart"))
+        {
+            AudioManager.instance.Play("HealthPickUp");
+            currentHealth += heartAmount;
+            GameManager.instance.HealthUpdater(currentHealth);
+            bar.SetHealth(currentHealth);
+
+
+            GameObject incHealth = Instantiate(floatPoint, new Vector3(transform.position.x + 0.338f, transform.position.y + 0.189f, 0f), Quaternion.identity) as GameObject;
+            incHealth.transform.GetChild(0).GetComponent<TextMeshPro>().color = Color.green;
+            incHealth.transform.GetChild(0).GetComponent<TextMeshPro>().text = "+" + heartAmount;
+
+            if(currentHealth >= 100)
+            {
+                currentHealth = 100;
+            }
+
+            Destroy(collision.gameObject);
         }
     }
 }

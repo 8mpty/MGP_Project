@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyPlatform : MonoBehaviour
+public class DestroyOutOfRange : MonoBehaviour
 {
     private Transform cameraObj;
 
     private float discBtw;
-    private float range = 8f;
+    [SerializeField]private float range = 8f;
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class DestroyPlatform : MonoBehaviour
 
         if (discBtw > range)
         {
-            if(transform.position.y < cameraObj.position.y)
+            if (transform.position.y < cameraObj.position.y)
             {
                 Destroy(gameObject);
             }
